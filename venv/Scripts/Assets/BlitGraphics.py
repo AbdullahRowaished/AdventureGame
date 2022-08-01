@@ -14,7 +14,6 @@ def ScreenUpdate():
     screen.fill((25, 25, 25))
 
 def CursorUpdate(event):
-    ScreenUpdate()
     screen.blit(cursor, pygame.mouse.get_pos())
     
 def NewButton(size):
@@ -32,15 +31,17 @@ def TitleScreen():
     LOAD_GAME = 2
     NEW_GAME = 3
     EXIT_GAME = 4
-    
-    ScreenUpdate()
-    screen.blit(PressAnyButton, [ceil(SCREEN_SIZE[0]*0.5), ceil(SCREEN_SIZE[1]*0.25)])
+
+    PressAnyButton.fill([255,0,0])
+    pressanytext = pygame.font.SysFont("arial",22).render("Press Any Button", True, [0,0,0], [255,255,255])
+    screen.blit(PressAnyButton, [ceil(SCREEN_SIZE[0]*0.35), ceil(SCREEN_SIZE[1]*0.7)])
+    PressAnyButton.blit(pressanytext, [0,0])
     
 while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
-        elif event.type == MOUSEMOTION:
-            CursorUpdate(event)
-
+    ScreenUpdate()
+    TitleScreen()
+    CursorUpdate(event)
     pygame.display.update()
