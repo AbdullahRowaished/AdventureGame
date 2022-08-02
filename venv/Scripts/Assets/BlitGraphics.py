@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from sys import *
 from math import ceil
+from random import randint
 
 SCREEN_SIZE = (1280, 720)
 
@@ -9,6 +10,11 @@ pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
 cursor = pygame.transform.scale(pygame.image.load("Images\Spear of Longinus.png").convert_alpha(), [160,90])
 pygame.mouse.set_visible(False)
+clock = pygame.time.Clock()
+randR = 0
+randG = 0
+randB = 0
+total_time = 0
 
 def ScreenUpdate():
     screen.fill((25, 25, 25))
@@ -22,13 +28,21 @@ def NewButton(size):
 
 def TitleScreenUpdate():
     PressAnyButton = NewButton([0.3, 0.1])
+    PressAnyButton.fill([200,0,0])
+    global total_time, random_color, randR, randG, randB
+    total_time += clock.get_time()
+    if total_time > 120:
+        total_time = 0
+        randR = randint(0,255)
+        randG = randint(0,255)
+        randB = randint(0,255)
+    textbox = pygame.font.SysFont("arial",34).render("Press Any Button", True, [randR,randG,randG], PressAnyButton.get_colorkey())
+    PressAnyButton.blit(textbox, [(PressAnyButton.get_width()-textbox.get_width())/2, (PressAnyButton.get_height()-textbox.get_height())/2])
 
-    PressAnyButton.fill([255,0,0])
-    pressanytext = pygame.font.SysFont("arial",22).render("Press Any Button", True, [255,255,255], PressAnyButton.get_colorkey())
-    PressAnyButton.blit(pressanytext, [(PressAnyButton.get_width()-pressanytext.get_width())/2, (PressAnyButton.get_height()-pressanytext.get_height())/2])
     screen.blit(PressAnyButton, [ceil(SCREEN_SIZE[0]*0.35), ceil(SCREEN_SIZE[1]*0.7)])
     
 while True:
+    clock.tick(75)
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
