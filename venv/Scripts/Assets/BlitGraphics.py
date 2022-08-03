@@ -36,6 +36,9 @@ def NewButton(size):
     return pygame.surface.Surface([width * size[0], height * size[1]])
 #Button Surface Objects
 PressAnyButton = NewButton([0.3, 0.1])
+LoadGameButton = NewButton([0.3, 0.1])
+NewGameButton = NewButton([0.3, 0.1])
+QuitButton = NewButton([0.3, 0.1])
 
 #Updates the display during the Press Any phase prior to title menu selection
 def PressAnyUpdate():
@@ -60,7 +63,32 @@ def PressAnyUpdate():
 
 #TODO: Updates the display during title menu selection
 def TitleUpdate():
-    return None
+    global LoadGameButton, NewGameButton, QuitButton
+    buttonX = ceil(SCREEN_SIZE[0] * 0.35)
+    buttonY = ceil(SCREEN_SIZE[1] * 0.25)
+    counter = 1
+    for button in [LoadGameButton, NewGameButton, QuitButton]:
+        if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()):
+            fill_color = 255
+        else:
+            fill_color = 150
+        button.fill([fill_color, 0, 0])
+        textstr = ""
+        if counter == 1:
+            textstr = "Load Game"
+        elif counter == 2:
+            textstr = "New Game"
+        elif counter == 3:
+            textstr = "Exit"
+        elif counter > 3:
+            counter = 0
+        counter += 1
+        textbox = pygame.font.SysFont("arial", 34).render(textstr, True, [255, 255, 255],
+                                                          button.get_colorkey())
+        button.blit(textbox, [(button.get_width() - textbox.get_width()) / 2,
+                                      (button.get_height() - textbox.get_height()) / 2])
+        screen.blit(button, [buttonX, buttonY])
+        buttonY += button.get_height() + 20
 
 #Graphics Life Cycle
 while True:
@@ -69,7 +97,7 @@ while True:
         if event.type == QUIT:
             exit()
         elif event.type == KEYDOWN:
-            if NAVSTATE == PRESSANY:
+            if NAVSTATE == PRESSANY and not pygame.key.get_pressed()[K_ESCAPE]:
                 NAVSTATE = TITLESCREEN
             elif NAVSTATE == TITLESCREEN and pygame.key.get_pressed()[K_ESCAPE]:
                 NAVSTATE = PRESSANY
