@@ -4,7 +4,7 @@ from sys import *
 from math import ceil
 from random import randint
 
-SCREEN_SIZE = (1280, 720)
+SCREEN_SIZE = (960, 480)
 
 #Navigation through the menus
 PRESSANY = 1
