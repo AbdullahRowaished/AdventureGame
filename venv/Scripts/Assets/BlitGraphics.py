@@ -79,6 +79,9 @@ def TitleUpdate():
         elif counter == 2:
             textstr = "New Game"
         elif counter == 3:
+            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos())\
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                exit()
             textstr = "Exit"
         elif counter > 3:
             counter = 0
@@ -97,9 +100,11 @@ while True:
         if event.type == QUIT:
             exit()
         elif event.type == KEYDOWN:
-            if NAVSTATE == PRESSANY and not pygame.key.get_pressed()[K_ESCAPE]:
+            if NAVSTATE == PRESSANY\
+                and not pygame.key.get_pressed()[K_ESCAPE]:
                 NAVSTATE = TITLESCREEN
-            elif NAVSTATE == TITLESCREEN and pygame.key.get_pressed()[K_ESCAPE]:
+            elif NAVSTATE == TITLESCREEN\
+                    and pygame.key.get_pressed()[K_ESCAPE]:
                 NAVSTATE = PRESSANY
     ScreenUpdate()
     if NAVSTATE == PRESSANY:
