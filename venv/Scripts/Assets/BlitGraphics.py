@@ -9,6 +9,7 @@ SCREEN_SIZE = (960, 480)
 #Navigation through the menus
 PRESSANY = 1
 TITLESCREEN = 2
+NEWGAME = 3
 NAVSTATE = PRESSANY
 
 pygame.init()
@@ -73,6 +74,9 @@ def TitleUpdate():
         if counter == 1:
             textstr = "Load Game"
         elif counter == 2:
+            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                ChangeState(NEWGAME)
             textstr = "New Game"
         elif counter == 3:
             if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos())\
@@ -92,27 +96,35 @@ def TitleUpdate():
 def NewGameUpdate():
     return None
 
-def EventHandler():
+def ChangeState(state):
     global NAVSTATE
+    NAVSTATE = state
+
+def EventHandler():
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
         elif event.type == KEYDOWN:
             if NAVSTATE == PRESSANY\
                 and not pygame.key.get_pressed()[K_ESCAPE]:
-                NAVSTATE = TITLESCREEN
-            elif NAVSTATE == TITLESCREEN\
-                    and pygame.key.get_pressed()[K_ESCAPE]:
-                NAVSTATE = PRESSANY
+                ChangeState(TITLESCREEN)
+            elif NAVSTATE == TITLESCREEN:
+                    if pygame.key.get_pressed()[K_ESCAPE]:
+                        ChangeState(PRESSANY)
+
+def StateUpdate():
     if NAVSTATE == PRESSANY:
         PressAnyUpdate()
     elif NAVSTATE == TITLESCREEN:
         TitleUpdate()
+    elif NAVSTATE == NEWGAME:
+        NewGameUpdate()
 
 #Graphics Life Cycle
 while True:
     clock.tick(75)
     ScreenUpdate()
     EventHandler()
+    StateUpdate()
     CursorUpdate()
     pygame.display.update()
