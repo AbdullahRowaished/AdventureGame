@@ -27,7 +27,7 @@ def ScreenUpdate():
     screen.fill((25, 25, 25))
 
 #Updates the cursor
-def CursorUpdate(event):
+def CursorUpdate():
     screen.blit(cursor, pygame.mouse.get_pos())
 
 #Creates a new button
@@ -89,9 +89,11 @@ def TitleUpdate():
         screen.blit(button, [buttonX, buttonY])
         buttonY += button.get_height() + 20
 
-#Graphics Life Cycle
-while True:
-    clock.tick(75)
+def NewGameUpdate():
+    return None
+
+def EventHandler():
+    global NAVSTATE
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
@@ -102,10 +104,15 @@ while True:
             elif NAVSTATE == TITLESCREEN\
                     and pygame.key.get_pressed()[K_ESCAPE]:
                 NAVSTATE = PRESSANY
-    ScreenUpdate()
     if NAVSTATE == PRESSANY:
         PressAnyUpdate()
     elif NAVSTATE == TITLESCREEN:
         TitleUpdate()
-    CursorUpdate(event)
+
+#Graphics Life Cycle
+while True:
+    clock.tick(75)
+    ScreenUpdate()
+    EventHandler()
+    CursorUpdate()
     pygame.display.update()
