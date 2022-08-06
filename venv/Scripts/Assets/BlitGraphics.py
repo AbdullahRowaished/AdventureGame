@@ -45,11 +45,7 @@ def PressAnyUpdate():
     global PressAnyButton
     buttonX = ceil(SCREEN_SIZE[0]*0.35)
     buttonY = ceil(SCREEN_SIZE[1]*0.7)
-    if PressAnyButton.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()):
-        fill_color = 255
-    else:
-        fill_color = 150
-    PressAnyButton.fill([fill_color, 0, 0])
+    PressAnyButton.fill((25, 25, 25))
     global total_time, random_color, randR, randG, randB
     total_time += clock.get_time()
     if total_time > 120:
