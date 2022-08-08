@@ -37,7 +37,8 @@ def ScreenUpdate():
 
 #Updates the cursor
 def CursorUpdate():
-    screen.blit(cursor, pygame.mouse.get_pos())
+    x, y = pygame.mouse.get_pos()
+    screen.blit(cursor, [x-15,y-10])
 
 #Creates a new button
 def NewButton(size):
