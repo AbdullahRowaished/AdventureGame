@@ -10,13 +10,21 @@ SCREEN_SIZE = (960, 480)
 PRESSANY = 1
 TITLESCREEN = 2
 NEWGAME = 3
+PLAYING = 4
 NAVSTATE = PRESSANY
+
+#Difficulties
+EASY = 1
+NORMAL = 2
+HARD = 3
+DIFFICULTY = NORMAL
 
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
 cursor = pygame.transform.scale(pygame.image.load("Images\Spear of Longinus.png").convert_alpha(), [160,90])
 pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
+total_time = 0
 #Random numbers used for Press Any Button
 randR = 0
 randG = 0
@@ -39,6 +47,9 @@ PressAnyButton = NewButton([0.3, 0.1])
 LoadGameButton = NewButton([0.3, 0.1])
 NewGameButton = NewButton([0.3, 0.1])
 QuitButton = NewButton([0.3, 0.1])
+EasyButton = NewButton([0.3, 0.1])
+NormalButton = NewButton([0.3, 0.1])
+HardButton = NewButton([0.3, 0.1])
 
 #Updates the display during the Press Any phase prior to title menu selection
 def PressAnyUpdate():
@@ -74,12 +85,14 @@ def TitleUpdate():
             textstr = "Load Game"
         elif counter == 2:
             if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]\
+                    and NAVSTATE == TITLESCREEN:
                 ChangeState(NEWGAME)
             textstr = "New Game"
         elif counter == 3:
             if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos())\
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]\
+                    and NAVSTATE == TITLESCREEN:
                 exit()
             textstr = "Exit"
         elif counter > 3:
@@ -93,11 +106,53 @@ def TitleUpdate():
         buttonY += button.get_height() + 20
 
 def NewGameUpdate():
-    return None
+    global EasyButton, NormalButton, HardButton
+    buttonX = ceil(SCREEN_SIZE[0] * 0.35)
+    buttonY = ceil(SCREEN_SIZE[1] * 0.25)
+    counter = 1
+    for button in [EasyButton, NormalButton, HardButton]:
+        if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()):
+            fill_color = 255
+        else:
+            fill_color = 150
+        button.fill([fill_color, 0, 0])
+        textstr = ""
+        if counter == 1:
+            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                ChangeState(PLAYING)
+                ChangeDifficulty(EASY)
+            textstr = "Easy"
+        elif counter == 2:
+            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                ChangeState(PLAYING)
+                ChangeDifficulty(NORMAL)
+            textstr = "Normal"
+        elif counter == 3:
+            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
+                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
+                ChangeState(PLAYING)
+                ChangeDifficulty(HARD)
+            textstr = "Hard"
+        elif counter > 3:
+            counter = 0
+        counter += 1
+        textbox = pygame.font.SysFont("arial", 34).render(textstr, True, [255, 255, 255],
+                                                          button.get_colorkey())
+        button.blit(textbox, [(button.get_width() - textbox.get_width()) / 2,
+                              (button.get_height() - textbox.get_height()) / 2])
+        screen.blit(button, [buttonX, buttonY])
+        buttonY += button.get_height() + 20
+        print("newgame"+str(counter)+" state: "+str(NAVSTATE))
 
 def ChangeState(state):
     global NAVSTATE
     NAVSTATE = state
+
+def ChangeDifficulty(difficulty):
+    global DIFFICULTY
+    DIFFICULTY = difficulty
 
 def EventHandler():
     for event in pygame.event.get():
@@ -117,6 +172,8 @@ def StateUpdate():
     elif NAVSTATE == TITLESCREEN:
         TitleUpdate()
     elif NAVSTATE == NEWGAME:
+        NewGameUpdate()
+    elif NAVSTATE == PLAYING:
         NewGameUpdate()
 
 #Graphics Life Cycle
