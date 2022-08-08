@@ -5,6 +5,7 @@ from math import ceil
 from random import randint
 
 SCREEN_SIZE = (960, 480)
+OptionSelected = False
 
 #Navigation through the menus
 PRESSANY = 1
@@ -70,34 +71,36 @@ def PressAnyUpdate():
 
 #TODO: Updates the display during title menu selection
 def TitleUpdate():
-    global LoadGameButton, NewGameButton, QuitButton
+    global LoadGameButton, NewGameButton, QuitButton, OptionSelected
     buttonX = ceil(SCREEN_SIZE[0] * 0.35)
     buttonY = ceil(SCREEN_SIZE[1] * 0.25)
     counter = 1
     for button in [LoadGameButton, NewGameButton, QuitButton]:
+        textstr = ""
         if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()):
             fill_color = 255
+            if pygame.mouse.get_pressed(num_buttons=3)[0] and not OptionSelected:
+                OptionSelected = True
+                if counter == 1:
+                    print("")
+                elif counter == 2:
+                    ChangeState(NEWGAME)
+                elif counter == 3:
+                    exit()
         else:
             fill_color = 150
         button.fill([fill_color, 0, 0])
-        textstr = ""
+
         if counter == 1:
             textstr = "Load Game"
         elif counter == 2:
-            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]\
-                    and NAVSTATE == TITLESCREEN:
-                ChangeState(NEWGAME)
             textstr = "New Game"
         elif counter == 3:
-            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos())\
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]\
-                    and NAVSTATE == TITLESCREEN:
-                exit()
             textstr = "Exit"
-        elif counter > 3:
+        else:
             counter = 0
         counter += 1
+
         textbox = pygame.font.SysFont("arial", 34).render(textstr, True, [255, 255, 255],
                                                           button.get_colorkey())
         button.blit(textbox, [(button.get_width() - textbox.get_width()) / 2,
@@ -106,45 +109,46 @@ def TitleUpdate():
         buttonY += button.get_height() + 20
 
 def NewGameUpdate():
-    global EasyButton, NormalButton, HardButton
+    global EasyButton, NormalButton, HardButton, OptionSelected
     buttonX = ceil(SCREEN_SIZE[0] * 0.35)
     buttonY = ceil(SCREEN_SIZE[1] * 0.25)
     counter = 1
     for button in [EasyButton, NormalButton, HardButton]:
+        textstr = ""
         if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()):
             fill_color = 255
+            if pygame.mouse.get_pressed(num_buttons=3)[0] and not OptionSelected:
+                OptionSelected = True
+                ChangeState(PLAYING)
+                if counter == 1:
+                    ChangeDifficulty(EASY)
+                elif counter == 2:
+                    ChangeDifficulty(NORMAL)
+                elif counter == 3:
+                    ChangeDifficulty(HARD)
         else:
             fill_color = 150
         button.fill([fill_color, 0, 0])
-        textstr = ""
+
         if counter == 1:
-            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
-                ChangeState(PLAYING)
-                ChangeDifficulty(EASY)
             textstr = "Easy"
         elif counter == 2:
-            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
-                ChangeState(PLAYING)
-                ChangeDifficulty(NORMAL)
             textstr = "Normal"
         elif counter == 3:
-            if button.get_rect(topleft=([buttonX, buttonY])).collidepoint(pygame.mouse.get_pos()) \
-                    and pygame.mouse.get_pressed(num_buttons=3)[0]:
-                ChangeState(PLAYING)
-                ChangeDifficulty(HARD)
             textstr = "Hard"
-        elif counter > 3:
+        else:
             counter = 0
         counter += 1
+
         textbox = pygame.font.SysFont("arial", 34).render(textstr, True, [255, 255, 255],
                                                           button.get_colorkey())
         button.blit(textbox, [(button.get_width() - textbox.get_width()) / 2,
                               (button.get_height() - textbox.get_height()) / 2])
         screen.blit(button, [buttonX, buttonY])
         buttonY += button.get_height() + 20
-        print("newgame"+str(counter)+" state: "+str(NAVSTATE))
+
+def GameplayUpdate():
+    return None
 
 def ChangeState(state):
     global NAVSTATE
@@ -155,6 +159,7 @@ def ChangeDifficulty(difficulty):
     DIFFICULTY = difficulty
 
 def EventHandler():
+    global OptionSelected
     for event in pygame.event.get():
         if event.type == QUIT:
             exit()
@@ -162,9 +167,11 @@ def EventHandler():
             if NAVSTATE == PRESSANY\
                 and not pygame.key.get_pressed()[K_ESCAPE]:
                 ChangeState(TITLESCREEN)
-            elif NAVSTATE == TITLESCREEN:
+            elif NAVSTATE > PRESSANY:
                     if pygame.key.get_pressed()[K_ESCAPE]:
-                        ChangeState(PRESSANY)
+                        ChangeState(NAVSTATE-1)
+        elif event.type == MOUSEBUTTONUP:
+            OptionSelected = False
 
 def StateUpdate():
     if NAVSTATE == PRESSANY:
@@ -174,7 +181,7 @@ def StateUpdate():
     elif NAVSTATE == NEWGAME:
         NewGameUpdate()
     elif NAVSTATE == PLAYING:
-        NewGameUpdate()
+        GameplayUpdate()
 
 #Graphics Life Cycle
 while True:
@@ -183,4 +190,5 @@ while True:
     EventHandler()
     StateUpdate()
     CursorUpdate()
+    #print("state: " + str(NAVSTATE) + " option selected: " + str(OptionSelected))
     pygame.display.update()
