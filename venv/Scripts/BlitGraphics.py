@@ -22,7 +22,7 @@ DIFFICULTY = NORMAL
 
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
-cursor = pygame.transform.scale(pygame.image.load("Images\Spear of Longinus.png").convert_alpha(), [160,90])
+cursor = pygame.transform.scale(pygame.image.load("Assets\Images\Spear of Longinus.png").convert_alpha(), [160,90])
 pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
 total_time = 0
