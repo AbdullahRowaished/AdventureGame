@@ -22,8 +22,8 @@ DIFFICULTY = NORMAL
 
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
-cursor = pygame.transform.scale(pygame.image.load("Assets\Images\Spear of Longinus.png").convert_alpha(), [160,90])
-pygame.mouse.set_visible(False)
+cursor = pygame.transform.scale(pygame.image.load("Assets\Images\Spear of Longinus.png").convert_alpha(), [75,75])
+pygame.mouse.set_visible(True)
 clock = pygame.time.Clock()
 total_time = 0
 #Random numbers used for Press Any Button
@@ -38,7 +38,7 @@ def ScreenUpdate():
 #Updates the cursor
 def CursorUpdate():
     x, y = pygame.mouse.get_pos()
-    screen.blit(cursor, [x-15,y-10])
+    screen.blit(cursor, [x-5,y-5])
 
 #Creates a new button
 def NewButton(size):
