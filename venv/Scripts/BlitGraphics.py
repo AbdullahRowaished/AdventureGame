@@ -23,7 +23,7 @@ DIFFICULTY = NORMAL
 pygame.init()
 screen = pygame.display.set_mode(SCREEN_SIZE)
 cursor = pygame.transform.scale(pygame.image.load("Assets\Images\Spear of Longinus.png").convert_alpha(), [75,75])
-pygame.mouse.set_visible(True)
+pygame.mouse.set_visible(False)
 clock = pygame.time.Clock()
 total_time = 0
 #Random numbers used for Press Any Button
