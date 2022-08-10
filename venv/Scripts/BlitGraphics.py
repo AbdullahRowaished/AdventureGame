@@ -168,7 +168,7 @@ def EventHandler():
             if NAVSTATE == PRESSANY\
                 and not pygame.key.get_pressed()[K_ESCAPE]:
                 ChangeState(TITLESCREEN)
-            elif NAVSTATE > PRESSANY:
+            elif NAVSTATE in [TITLESCREEN, NEWGAME]:
                     if pygame.key.get_pressed()[K_ESCAPE]:
                         ChangeState(NAVSTATE-1)
         elif event.type == MOUSEBUTTONUP:
