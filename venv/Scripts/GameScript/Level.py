@@ -3,11 +3,9 @@ import pygame
 class Level:
     Borders = []
     Landscape = []
-    Doors = []
-    Buildings = []
-    Dungeons = []
+    Accessways = []
     Structures = []
-    Enemies = []
+    Characters = []
 
     def __init__(self):
         FillLevel()
